@@ -8,15 +8,16 @@ export const listarUsuarios = async () => {
   });
 };
 
-export const crearUsuario = async (data) => {
-  const { nombre, email, rol } = data;
-
+export const crearUsuario = async (nombre, email, rolId) => {
+  console.log("Datos recibidos en servicio:", nombre, email, rolId);
   if (!nombre || !email) throw new Error("Faltan campos obligatorios");
 
   const existe = await Usuario.findOne({ email });
   if (existe) throw new Error("El usuario ya existe");
 
-  return await Usuario.create({ nombre, email, rol });
+  const nuevoUsuario = new Usuario({ nombre, email, rol: rolId || null });
+  await nuevoUsuario.save();
+  return nuevoUsuario;
 };
 
 export const editarUsuario = async (id, data) => {
@@ -45,4 +46,11 @@ export const obtenerUsuarioConPermisos = async (id) => {
     rol: usuario.rol?.nombre,
     permisos: usuario.rol?.permisos?.map((p) => p.nombre) || [],
   };
+};
+
+export const obtenerUsuarioPorId = async (id) => {
+  return await Usuario.findById(id).populate({
+    path: "rol",
+    populate: { path: "permisos" },
+  });
 };

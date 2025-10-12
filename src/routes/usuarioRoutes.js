@@ -1,21 +1,12 @@
 import express from "express";
-import {
-  listarUsuarios,
-  crearUsuario,
-  editarUsuario,
-  eliminarUsuario,
-  obtenerUsuarioConPermisos,
-  mostrarUsuarios,
-} from "../controllers/usuarioController.js";
-
-import { verificarPermiso } from "../middleware/verificarPermiso.js";
+import { listarUsuarios, crearVista, crear, detalle } from "../controllers/usuarioController.js";
+import { verificarPermiso } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", mostrarUsuarios);
-router.post("/", verificarPermiso("crear_usuario"), crearUsuario);
-router.put("/:id", verificarPermiso("editar_usuario"), editarUsuario);
-router.delete("/:id", verificarPermiso("eliminar_usuario"), eliminarUsuario);
-router.get("/:id", verificarPermiso("ver_usuario"), obtenerUsuarioConPermisos);
+router.get("/", verificarPermiso("ver_usuarios"), listarUsuarios);
+router.get("/nuevo", verificarPermiso("crear_usuarios"), crearVista);
+router.post("/nuevo", verificarPermiso("crear_usuarios"), crear);
+router.get("/:id", verificarPermiso("ver_usuarios"), detalle);
 
 export default router;

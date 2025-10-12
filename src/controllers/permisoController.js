@@ -4,9 +4,9 @@ import * as permisoService from "../services/permisoService.js";
 export const listarPermisos = async (req, res) => {
   try {
     const permisos = await permisoService.listarPermisos();
-    res.render("permisos/listaPermisos", { permisos, error: null });
+    res.render("permisos/lista", { permisos, error: null });
   } catch (err) {
-    res.render("permisos/listaPermisos", { permisos: [], error: err.message });
+    res.render("permisos/lista", { permisos: [], error: err.message });
   }
 };
 
@@ -18,7 +18,7 @@ export const crearPermiso = async (req, res) => {
     res.redirect("/permisos");
   } catch (err) {
     const permisos = await permisoService.listarPermisos();
-    res.render("permisos/listaPermisos", { permisos, error: err.message });
+    res.render("permisos/lista", { permisos, error: err.message });
   }
 };
 

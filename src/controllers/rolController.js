@@ -1,13 +1,38 @@
 import Rol from "../models/Rol.js";
 import Permiso from "../models/Permiso.js";
+import * as rolService from "../services/rolService.js";
+import * as permisoService from "../services/permisoService.js";
 
 // Listar roles
 export const listarRoles = async (req, res) => {
   try {
-    const roles = await Rol.find().populate("permisos", "nombre");
-    res.json(roles);
+    console.log("Listando roles...");
+    const roles = await rolService.listarRoles();
+    res.render("roles/lista", { roles });
   } catch (err) {
     res.status(500).json({ error: "Error al listar roles" });
+  }
+};
+
+// Editar roles
+export const editarVista = async (req, res) => {
+  try {
+    const rol = await rolService.obtenerRolPorId(req.params.id);
+    const permisos = await permisoService.listarPermisos();
+
+    res.render("roles/editar", { rol, permisos });
+  } catch (err) {
+    res.status(500).send("Error: " + err.message);
+  }
+};
+
+// Listar roles actualizados
+export const actualizarPermisos = async (req, res) => {
+  try {
+    await rolService.actualizarPermisos(req.params.id, req.body.permisos);
+    res.redirect(`/roles/${req.params.id}/edit`);
+  } catch (err) {
+    res.status(500).send("Error al actualizar permisos: " + err.message);
   }
 };
 

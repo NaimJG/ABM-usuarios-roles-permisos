@@ -16,9 +16,6 @@ const app = express();
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-// Servir archivos estáticos desde /public
-app.use(express.static(path.join(__dirname, "public")));
-
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -27,12 +24,11 @@ app.use("/usuarios", usuarioRoutes);
 app.use("/roles", rolRoutes);
 app.use("/permisos", permisoRoutes);
 
-// Ejemplo básico de ruta
 app.get("/", (req, res) => {
   res.render("index", { titulo: "Bienvenido al ABM de Usuarios, Roles y Permisos" });
 });
 
-// Cargar variables de entorno (opcional .env en la raíz)
+// Cargar variables de entorno
 dotenv.config();
 
 const MONGO_URI = process.env.MONGO_URI;
