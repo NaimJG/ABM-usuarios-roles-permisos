@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gestión de Permisos</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <h1>Permisos</h1>
+
+  <a href="/">← Volver al inicio</a>
+
+  <h2>Crear nuevo permiso</h2>
+  <form action="/permisos" method="POST">
+    <input
+      type="text"
+      name="nombre"
+      placeholder="Nombre del permiso"
+      required
+    />
+    <button type="submit">Crear</button>
+  </form>
+
+  <% if (error) { %>
+    <p style="color: red;"><%= error %></p>
+  <% } %>
+
+  <h2>Listado de permisos existentes</h2>
+  <table border="1" cellpadding="5">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (permisos.length === 0) { %>
+        <tr>
+          <td colspan="1">No hay permisos registrados.</td>
+        </tr>
+      <% } else { %>
+        <% permisos.forEach(permiso => { %>
+          <tr>
+            <td class="permiso-nombre"><%= permiso.nombre %></td>
+            <td>
+              <button class="editar-btn" data-id="<%= permiso._id %>">Editar</button>
+              <button class="eliminar-btn" data-id="<%= permiso._id %>">Eliminar</button>
+            </td>
+          </tr>
+        <% }) %>
+      <% } %>
+    </tbody>
+  </table>
+
+  <script>
+    // Editar permiso: muestra prompt y hace PUT
+    document.querySelectorAll('.editar-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const id = btn.dataset.id;
+        const row = btn.closest('tr');
+        if (!row) return alert('Fila no encontrada');
+        const nombreEl = row.querySelector('.permiso-nombre');
+        const nuevoNombre = prompt('Nuevo nombre del permiso:', nombreEl ? nombreEl.textContent.trim() : '');
+        if (!nuevoNombre) return;
+
+        try {
+          const res = await fetch(`/permisos/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nombre: nuevoNombre })
+          });
+          if (!res.ok) {
+            const errBody = await res.json().catch(() => ({}));
+            throw new Error(errBody.error || 'Error editando permiso');
+          }
+          const data = await res.json();
+          if (nombreEl) nombreEl.textContent = data.nombre;
+        } catch (err) {
+          alert('No se pudo editar el permiso: ' + err.message);
+        }
+      });
+    });
+
+    // Eliminar permiso: confirm y DELETE
+    document.querySelectorAll('.eliminar-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const id = btn.dataset.id;
+        if (!confirm('¿Eliminar este permiso?')) return;
+        try {
+          const res = await fetch(`/permisos/${id}`, { method: 'DELETE' });
+          if (!res.ok) {
+            const errBody = await res.json().catch(() => ({}));
+            throw new Error(errBody.error || 'Error eliminando permiso');
+          }
+          // quitar la fila de la tabla
+          const row = btn.closest('tr');
+          if (row) row.remove();
+        } catch (err) {
+          alert('No se pudo eliminar el permiso: ' + err.message);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
