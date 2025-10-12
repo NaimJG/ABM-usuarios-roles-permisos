@@ -52,17 +52,6 @@ export const crearRol = async (req, res) => {
   }
 };
 
-// Editar nombre del rol
-export const editarRol = async (req, res) => {
-  try {
-    const rol = await Rol.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!rol) return res.status(404).json({ error: "Rol no encontrado" });
-    res.json(rol);
-  } catch (err) {
-    res.status(500).json({ error: "Error al editar rol" });
-  }
-};
-
 // Eliminar rol
 export const eliminarRol = async (req, res) => {
   try {

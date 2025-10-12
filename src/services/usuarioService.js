@@ -20,32 +20,10 @@ export const crearUsuario = async (nombre, email, rolId) => {
   return nuevoUsuario;
 };
 
-export const editarUsuario = async (id, data) => {
-  const usuario = await Usuario.findByIdAndUpdate(id, data, { new: true });
-  if (!usuario) throw new Error("Usuario no encontrado");
-  return usuario;
-};
-
 export const eliminarUsuario = async (id) => {
   const usuario = await Usuario.findByIdAndDelete(id);
   if (!usuario) throw new Error("Usuario no encontrado");
   return usuario;
-};
-
-export const obtenerUsuarioConPermisos = async (id) => {
-  const usuario = await Usuario.findById(id).populate({
-    path: "rol",
-    populate: { path: "permisos", select: "nombre" },
-  });
-
-  if (!usuario) throw new Error("Usuario no encontrado");
-
-  return {
-    nombre: usuario.nombre,
-    email: usuario.email,
-    rol: usuario.rol?.nombre,
-    permisos: usuario.rol?.permisos?.map((p) => p.nombre) || [],
-  };
 };
 
 export const obtenerUsuarioPorId = async (id) => {
