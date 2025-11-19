@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gestión de Productos</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+
+<body>
+  <h1>Productos</h1>
+
+  <a href="/">← Volver al inicio</a>
+
+  <!-- Formulario de creación -->
+  <h2>Crear nuevo producto</h2>
+  <form action="/productos/new" method="POST">
+    <input type="text" name="nombre" placeholder="Nombre del producto" required />
+
+    <textarea
+      name="descripcion"
+      placeholder="Descripción del producto"
+      required
+    ></textarea>
+
+    <input type="number" name="precio" placeholder="Precio del producto" required />
+    <input type="number" name="stock" placeholder="Stock del producto" required />
+    <input type="text" name="imagen" placeholder="URL de la imagen del producto" />
+
+    <button type="submit">Crear</button>
+  </form>
+
+  <% if (error) { %>
+    <p style="color: red;"><%= error %></p>
+  <% } %>
+
+  <!-- Lista de productos -->
+  <h2>Listado de productos existentes</h2>
+
+  <table border="1" cellpadding="5">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Precio</th>
+        <th>Stock</th>
+        <th>Imagen</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% if (productos.length === 0) { %>
+        <tr>
+          <td colspan="6">No hay productos cargados.</td>
+        </tr>
+      <% } else { %>
+        <% productos.forEach(producto => { %>
+          <tr>
+            <td class="producto-nombre"><%= producto.nombre %></td>
+            <td><%= producto.descripcion %></td>
+            <td>$<%= producto.precio %></td>
+            <td><%= producto.stock %></td>
+            <td>
+              <img src="<%= producto.imagen %>" alt="Imagen" width="60" />
+            </td>
+            <td>
+              <button
+                class="editar-btn"
+                data-id="<%= producto._id %>"
+              >
+                Editar
+              </button>
+
+              <button
+                class="eliminar-btn"
+                data-id="<%= producto._id %>"
+              >
+                Eliminar
+              </button>
+            </td>
+          </tr>
+        <% }) %>
+      <% } %>
+    </tbody>
+  </table>
+
+  <!-- Scripts -->
+  <script>
+    // --- Editar producto ---
+    document.querySelectorAll('.editar-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+        const row = btn.closest('tr');
+        if (!row) return alert('Fila no encontrada');
+
+        const nombreEl = row.querySelector('.producto-nombre');
+        const nuevoNombre = prompt(
+          'Nuevo nombre del producto:',
+          nombreEl ? nombreEl.textContent.trim() : ''
+        );
+
+        if (!nuevoNombre) return;
+
+        try {
+          const res = await fetch(`/productos/${id}/edit`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nombre: nuevoNombre })
+          });
+
+          if (!res.ok) {
+            const errBody = await res.json().catch(() => ({}));
+            throw new Error(errBody.error || 'Error actualizando producto');
+          }
+
+          if (nombreEl) nombreEl.textContent = nuevoNombre;
+        } catch (err) {
+          alert('No se pudo actualizar el producto: ' + err.message);
+        }
+      });
+    });
+
+    // --- Eliminar producto ---
+    document.querySelectorAll('.eliminar-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+
+        if (!confirm('¿Eliminar este producto?')) return;
+
+        try {
+          const res = await fetch(`/productos/${id}/delete`, { method: 'DELETE' });
+
+          if (!res.ok) {
+            const errBody = await res.json().catch(() => ({}));
+            throw new Error(errBody.error || 'Error eliminando producto');
+          }
+
+          const row = btn.closest('tr');
+          if (row) row.remove();
+        } catch (err) {
+          alert('No se pudo eliminar el producto: ' + err.message);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

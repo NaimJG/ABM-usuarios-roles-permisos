@@ -27,6 +27,11 @@
           <td><%= usuario.rol ? usuario.rol.nombre : 'Sin rol' %></td>
           <td>
             <a href="/usuarios/<%= usuario._id %>">Ver</a>
+            <form action="/usuarios/<%= usuario._id %>/delete" method="POST" style="display:inline;">
+              <button type="submit" onclick="return confirm('¿Eliminar este usuario?')">
+                Eliminar
+              </button>
+            </form>
           </td>
         </tr>
       <% }) %>

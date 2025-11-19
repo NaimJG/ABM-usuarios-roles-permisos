@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login - Pócimas & Trebejos</title>
   <link rel="stylesheet" href="/styles.css" />
+  <style>
+  </style>
 </head>
 <body>
   <h1>¡Bienvenido a Pócimas & Trebejos!</h1>
@@ -15,9 +17,13 @@
   <% } %>
 
   <form action="/auth/login" method="POST">
-    <input type="email" name="email" placeholder="Email" required /><br>
+    <input type="email" name="email" placeholder="Correo" required /><br>
     <input type="password" name="password" placeholder="Contraseña" required /><br>
     <button type="submit">Ingresar</button>
   </form>
+
+  <div>
+    <a href="/auth/signup">Crear cuenta</a>
+  </div>
 </body>
 </html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Catálogo de Productos</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #f6f6f6;
+      padding: 20px;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    .producto {
+      background: white;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+    }
+    .producto h3 {
+      margin: 0 0 10px 0;
+    }
+    .btn {
+      display: inline-block;
+      padding: 8px 12px;
+      background: #0d6efd;
+      color: white;
+      border-radius: 4px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+    }
+    .btn:disabled {
+      background: #aaa;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Catálogo de Productos</h1>
+
+  <p>Bienvenido, <strong><%= usuario.nombre %></strong> 👋</p>
+  <a href="/auth/logout">Cerrar sesión</a>
+
+  <hr /><br>
+
+  <% if (productos.length === 0) { %>
+      <p>No hay productos cargados en el sistema.</p>
+  <% } %>
+
+  <% productos.forEach(producto => { %>
+    <div class="producto">
+        <% if (producto.imagen) { %>
+            <img src="<%= producto.imagen %>" alt="<%= producto.nombre %>" class="img-producto">
+        <% } %>
+      <h3><%= producto.nombre %></h3>
+      <p><strong>Descripción:</strong> <%= producto.descripcion %></p>
+      <p><strong>Precio:</strong> $<%= producto.precio %></p>
+      <p><strong>Stock disponible:</strong> <%= producto.stock %></p>
+
+      <form action="/carrito/agregar/<%= producto._id %>" method="POST">
+        <button class="btn" <%= producto.stock === 0 ? "disabled" : "" %>>
+          <%= producto.stock === 0 ? "Sin stock" : "Agregar al carrito" %>
+        </button>
+      </form>
+    </div>
+  <% }) %>
+
+</body>
+</html>

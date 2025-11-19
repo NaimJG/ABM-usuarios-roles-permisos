@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pócimas & Trebejos</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <h1><%= titulo %></h1>
+
+  <nav>
+    <a href="/usuarios">Usuarios</a> |
+    <a href="/roles">Roles</a> |
+    <a href="/permisos">Permisos</a> | 
+    <a href="/productos">Productos</a>
+  </nav>
+
+  <p>Seleccioná una sección para administrar.</p>
+  
+<div>
+  <form action="/auth/logout" method="get">
+    <button type="submit">Cerrar sesión</button>
+  </form>
+</div>
+
+  
+</body>
+</html>

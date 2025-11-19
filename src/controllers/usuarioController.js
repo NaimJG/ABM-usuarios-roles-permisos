@@ -32,3 +32,15 @@ export const detalle = async (req, res) => {
     res.status(500).send("Error: " + err.message);
   }
 };
+
+export const eliminarUsuario = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    await usuarioService.eliminarUsuario(userId);
+    const usuarios = await usuarioService.listarUsuarios();
+    res.render("usuarios/lista", { usuarios });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error eliminando usuario");
+  }
+};

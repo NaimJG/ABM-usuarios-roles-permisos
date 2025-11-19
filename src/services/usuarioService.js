@@ -1,4 +1,5 @@
 import Usuario from "../models/Usuario.js";
+import bcrypt from "bcrypt";
 import Rol from "../models/Rol.js";
 
 export const listarUsuarios = async () => {
@@ -8,14 +9,23 @@ export const listarUsuarios = async () => {
   });
 };
 
-export const crearUsuario = async (nombre, email, rolId) => {
-  console.log("Datos recibidos en servicio:", nombre, email, rolId);
-  if (!nombre || !email) throw new Error("Faltan campos obligatorios");
+
+export const crearUsuario = async (nombre, email, rolId, password) => {
+  if (!nombre || !email || !password)
+    throw new Error("Faltan campos obligatorios");
 
   const existe = await Usuario.findOne({ email });
   if (existe) throw new Error("El usuario ya existe");
 
-  const nuevoUsuario = new Usuario({ nombre, email, rol: rolId || null });
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const nuevoUsuario = new Usuario({
+    nombre,
+    email,
+    password: hashedPassword,
+    rol: rolId || null
+  });
+
   await nuevoUsuario.save();
   return nuevoUsuario;
 };
