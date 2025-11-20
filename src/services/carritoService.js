@@ -25,7 +25,7 @@ export const agregarProducto = async (userId, prodId) => {
 
   if (item) {
     if (item.cantidad + 1 > producto.stock) {
-      throw new Error("No hay suficiente stock");
+      throw new Error("Alcanzaste el máximo de stock disponible");
     }
     item.cantidad++;
   } else {

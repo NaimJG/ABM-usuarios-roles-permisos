@@ -65,6 +65,15 @@
       cursor: pointer;
       border: none;
     }
+
+    .btn-sumar:disabled,
+    .btn-restar:disabled {
+      background: #b5b5b5 !important;
+      color: #eee !important;
+      cursor: not-allowed !important;
+      opacity: 0.7;
+    }
+
     .toast {
       position: fixed;
       top: 20px;
@@ -104,7 +113,7 @@
   <% } %>
 
   <% productos.forEach(producto => { %>
-    <div class="producto">
+    <div class="producto" data-stock="<%= producto.stock %>">
         <% if (producto.imagen) { %>
             <img src="<%= producto.imagen %>" alt="<%= producto.nombre %>" class="img-producto">
         <% } %>
@@ -114,7 +123,9 @@
       <p><strong>Precio:</strong> $<%= producto.precio %></p>
       <p>
         <% if (!producto.stock) { %>
-            <span style="color: red; font-weight: bold;">¡Stock agotado!</span>
+          <span style="color: red; font-weight: bold;">¡Stock agotado!</span>
+        <% } else { %>
+          <strong>Stock:</strong> <%= producto.stock %>
         <% } %>
       </p>
 
@@ -142,16 +153,19 @@
     async function cargarCantidadesEnProductos() {
       const res = await fetch("/carrito/cantidades");
       const data = await res.json();
-  
-      document.querySelectorAll(".cantidad-item").forEach(span => {
-        span.textContent = 0;
-      });
 
-      Object.keys(data).forEach(prodId => {
-        const span = document.getElementById("cant_" + prodId);
-        if (span) {
-          span.textContent = data[prodId];
-        }
+      document.querySelectorAll(".producto").forEach(div => {
+        const id = div.querySelector(".carrito-control").dataset.id;
+        const span = div.querySelector(".cantidad-item");
+        const btnSumar = div.querySelector(".btn-sumar");
+        const btnRestar = div.querySelector(".btn-restar");
+        
+        const cantidad = data[id] || 0;
+        const stock = Number(div.dataset.stock);
+
+        span.textContent = cantidad;
+        btnSumar.disabled = cantidad >= stock;
+        btnRestar.disabled = cantidad <= 0;
       });
     }
 
@@ -162,9 +176,10 @@
         const id = btn.dataset.id;
 
         const res = await fetch(`/carrito/agregar/${id}`, { method: "POST" });
+        const data = await res.json();
 
         if (!res.ok) {
-          showToast(res.message);
+          showToast(data.error);
           return;
         }
 

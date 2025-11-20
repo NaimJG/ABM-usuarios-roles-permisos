@@ -16,7 +16,6 @@ export const agregarAlCarrito = async (req, res) => {
 
     res.json({ ok: true, cantidad });
   } catch (error) {
-    console.error(error);
     res.status(400).json({ error: error.message });
   }
 };
@@ -67,8 +66,6 @@ export const cantidadesPorProducto = async (req, res) => {
       const prodId = i.producto._id.toString();
       cantidades[prodId] = i.cantidad;
     });
-
-    console.log(cantidades);
 
     res.json(cantidades);
   } catch (err) {
