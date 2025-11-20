@@ -8,6 +8,8 @@ import rolRoutes from "./routes/rolRoutes.js";
 import permisoRoutes from "./routes/permisoRoutes.js";
 import productoRoutes from "./routes/productoRoutes.js";
 import authRoutes from "./routes/authRoutes.js"
+import carritoRoutes from "./routes/carritoRoutes.js"
+import compraRoutes from "./routes/compraRoutes.js"
 import session from "express-session";
 import { listarProductos } from "./services/productoService.js";
 
@@ -37,11 +39,13 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 // Registrar routers
+app.use("/auth", authRoutes);
 app.use("/usuarios", usuarioRoutes);
 app.use("/roles", rolRoutes);
 app.use("/permisos", permisoRoutes);
 app.use("/productos", productoRoutes);
-app.use("/auth", authRoutes);
+app.use("/carrito", carritoRoutes);
+app.use("/compras", compraRoutes);
 
 app.get("/", async (req, res) => {
   const user = req.session.user;

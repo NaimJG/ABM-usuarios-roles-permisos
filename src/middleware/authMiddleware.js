@@ -17,6 +17,7 @@ export const verificarPermiso = (permisoRequerido) => {
       if (!usuario) {
         return res.status(404).json({ error: "Usuario no encontrado" });
       }
+      req.user = usuario;
 
       const permisosUsuario = usuario.rol?.permisos?.map((p) => p.nombre) || [];
 

@@ -69,3 +69,34 @@ export const detalleProducto = async (req, res) => {
     }
 
 };
+
+// Mostrar formulario de edición
+export const mostrarFormularioEditar = async (req, res) => {
+    try {
+        const producto = await ProductoService.obtenerProductoPorId(req.params.id);
+
+        if (!producto) return res.status(404).send("Producto no encontrado");
+
+        res.render("productos/editar", { producto, error: null });
+    } catch (err) {
+        res.status(500).send("Error: " + err.message);
+    }
+};
+
+// Guardar cambios del formulario
+export const actualizarProducto = async (req, res) => {
+    try {
+        const producto = await ProductoService.editarProducto(req.params.id, req.body);
+
+        if (!producto) return res.status(404).send("Producto no encontrado");
+
+        res.redirect("/productos");
+    } catch (err) {
+        const producto = await ProductoService.obtenerProductoPorId(req.params.id);
+
+        res.render("productos/editar", {
+            producto,
+            error: err.message
+        });
+    }
+};

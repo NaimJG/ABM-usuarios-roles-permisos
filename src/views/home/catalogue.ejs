@@ -12,15 +12,33 @@
     h1 {
       margin-bottom: 20px;
     }
+    .carrito-icon {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      cursor: pointer;
+      font-size: 24px;
+      background: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    }
+    .contador {
+      background: red;
+      color: white;
+      padding: 2px 6px;
+      border-radius: 50%;
+      font-size: 14px;
+      position: absolute;
+      top: -5px;
+      right: -5px;
+    }
     .producto {
       background: white;
       padding: 15px;
       margin-bottom: 15px;
       border-radius: 5px;
       border: 1px solid #ddd;
-    }
-    .producto h3 {
-      margin: 0 0 10px 0;
     }
     .btn {
       display: inline-block;
@@ -32,14 +50,48 @@
       border: none;
       cursor: pointer;
     }
-    .btn:disabled {
-      background: #aaa;
-      cursor: not-allowed;
+    .carrito-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .btn-restar, .btn-sumar {
+      background: #198754;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      border: none;
+    }
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: -300px;
+      background: #dc3545;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 6px;
+      font-size: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: right 0.4s ease;
+      z-index: 9999;
+    }
+    .toast.show {
+      right: 20px;
     }
   </style>
 </head>
 
+
 <body>
+  <div id="toast" class="toast"></div>
+  <div class="carrito-icon" onclick="window.location='/carrito'">
+    🛒
+    <span id="contadorCarrito" class="contador">0</span>
+  </div>
+
   <h1>Catálogo de Productos</h1>
 
   <p>Bienvenido, <strong><%= usuario.nombre %></strong> 👋</p>
@@ -56,18 +108,97 @@
         <% if (producto.imagen) { %>
             <img src="<%= producto.imagen %>" alt="<%= producto.nombre %>" class="img-producto">
         <% } %>
+
       <h3><%= producto.nombre %></h3>
       <p><strong>Descripción:</strong> <%= producto.descripcion %></p>
       <p><strong>Precio:</strong> $<%= producto.precio %></p>
-      <p><strong>Stock disponible:</strong> <%= producto.stock %></p>
+      <p>
+        <% if (!producto.stock) { %>
+            <span style="color: red; font-weight: bold;">¡Stock agotado!</span>
+        <% } %>
+      </p>
 
-      <form action="/carrito/agregar/<%= producto._id %>" method="POST">
-        <button class="btn" <%= producto.stock === 0 ? "disabled" : "" %>>
-          <%= producto.stock === 0 ? "Sin stock" : "Agregar al carrito" %>
+      <div class="carrito-control" data-id="<%= producto._id %>">
+        <button class="btn-restar" data-id="<%= producto._id %>" <%= producto.stock === 0 ? "disabled" : "" %>>
+          -
         </button>
-      </form>
+        <span class="cantidad-item" id="cant_<%= producto._id %>">0</span>
+        <button class="btn-sumar" data-id="<%= producto._id %>" <%= producto.stock === 0 ? "disabled" : "" %>>
+          +
+        </button>
+      </div>
     </div>
   <% }) %>
+
+  <script>
+    async function cargarContador() {
+      const res = await fetch("/carrito/cantidad");
+      const data = await res.json();
+      document.getElementById("contadorCarrito").textContent = data.cantidad;
+    }
+
+    cargarContador();
+
+    async function cargarCantidadesEnProductos() {
+      const res = await fetch("/carrito/cantidades");
+      const data = await res.json();
+  
+      document.querySelectorAll(".cantidad-item").forEach(span => {
+        span.textContent = 0;
+      });
+
+      Object.keys(data).forEach(prodId => {
+        const span = document.getElementById("cant_" + prodId);
+        if (span) {
+          span.textContent = data[prodId];
+        }
+      });
+    }
+
+    cargarCantidadesEnProductos();
+
+    document.querySelectorAll(".btn-sumar").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const id = btn.dataset.id;
+
+        const res = await fetch(`/carrito/agregar/${id}`, { method: "POST" });
+
+        if (!res.ok) {
+          showToast(res.message);
+          return;
+        }
+
+        cargarCantidadesEnProductos();
+        cargarContador();
+      });
+    });
+
+    document.querySelectorAll(".btn-restar").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const id = btn.dataset.id;
+
+        const res = await fetch(`/carrito/eliminarUno/${id}`, {
+          method: "POST"
+        });
+
+        if (res.ok) {
+          cargarCantidadesEnProductos();
+          cargarContador(); 
+        }
+      });
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      toast.textContent = msg;
+      toast.classList.add("show");
+
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2500);
+    }
+
+  </script>
 
 </body>
 </html>

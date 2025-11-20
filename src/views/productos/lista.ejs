@@ -64,12 +64,7 @@
               <img src="<%= producto.imagen %>" alt="Imagen" width="60" />
             </td>
             <td>
-              <button
-                class="editar-btn"
-                data-id="<%= producto._id %>"
-              >
-                Editar
-              </button>
+              <a href="/productos/<%= producto._id %>/edit" class="editar-btn">Editar</a>
 
               <button
                 class="eliminar-btn"
@@ -84,42 +79,7 @@
     </tbody>
   </table>
 
-  <!-- Scripts -->
   <script>
-    // --- Editar producto ---
-    document.querySelectorAll('.editar-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const id = btn.dataset.id;
-        const row = btn.closest('tr');
-        if (!row) return alert('Fila no encontrada');
-
-        const nombreEl = row.querySelector('.producto-nombre');
-        const nuevoNombre = prompt(
-          'Nuevo nombre del producto:',
-          nombreEl ? nombreEl.textContent.trim() : ''
-        );
-
-        if (!nuevoNombre) return;
-
-        try {
-          const res = await fetch(`/productos/${id}/edit`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nombre: nuevoNombre })
-          });
-
-          if (!res.ok) {
-            const errBody = await res.json().catch(() => ({}));
-            throw new Error(errBody.error || 'Error actualizando producto');
-          }
-
-          if (nombreEl) nombreEl.textContent = nuevoNombre;
-        } catch (err) {
-          alert('No se pudo actualizar el producto: ' + err.message);
-        }
-      });
-    });
-
     // --- Eliminar producto ---
     document.querySelectorAll('.eliminar-btn').forEach(btn => {
       btn.addEventListener('click', async () => {

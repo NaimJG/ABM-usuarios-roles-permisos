@@ -21,15 +21,21 @@ export const crearProducto = async (nombre, precio, descripcion, stock, imagen) 
 // Editar producto
 export const editarProducto = async (id, data) => {
     if (!id) throw new Error('ID de producto obligatorio');
-    if (data && data.nombre) {
+
+    // Validación de nombre duplicado
+    if (data.nombre) {
         const existente = await Producto.findOne({ nombre: data.nombre });
-        if (existente && existente._id.toString() !== id.toString()) {
-            throw new Error('El nombre del producto ya existe');
+        if (existente && existente._id.toString() !== id) {
+            throw new Error("El nombre del producto ya existe");
         }
     }
-    const producto = await Producto.findByIdAndUpdate(id, data, { new: true });
-    return producto;
-}
+
+    return await Producto.findByIdAndUpdate(id, data, { new: true });
+};
+
+export const obtenerProductoPorId = async (id) => {
+    return await Producto.findById(id);
+};
 
 // Eliminar producto
 export const eliminarProducto = async (id) => {
