@@ -4,47 +4,50 @@
   <meta charset="UTF-8">
   <title>Historial de Compras</title>
   <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/css/historial.css" />
 </head>
 
 <body>
-<h1>Historial de Compras</h1>
+  <h1>Historial de Compras</h1>
 
-<a href="/carrito">Volver</a>
-<hr>
+  <div class="historial-container">
+    <a href="/carrito">← Volver</a>
+    <hr color="#A67C52">
 
-<% if (historial.length === 0) { %>
-  <p>No tienes compras registradas.</p>
-<% } %>
+    <% if (historial.length === 0) { %>
+      <p>No tienes compras registradas.</p>
+    <% } %>
 
-<% historial.forEach(item => { %>
+    <% historial.forEach(item => { %>
 
-  <div style="border:1px solid #ccc; padding:10px; margin-bottom:20px;">
-    <p><strong>Fecha:</strong> <%= item.compra.fecha.toLocaleString() %></p>
-    <p><strong>Total:</strong> $<%= item.compra.total %></p>
+      <div class="compra">
+        <p><strong>Fecha:</strong> <%= item.compra.fecha.toLocaleString() %></p>
+        <p><strong>Total:</strong> $<%= item.compra.total %></p>
 
-    <table border="1" cellpadding="5" cellspacing="0">
-      <thead>
-        <tr>
-          <th>Producto</th>
-          <th>Cantidad</th>
-          <th>Precio Unit.</th>
-          <th>Subtotal</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% item.detalles.forEach(det => { %>
-          <tr>
-            <td><%= det.producto.nombre %></td>
-            <td><%= det.cantidad %></td>
-            <td>$<%= det.precio_unitario %></td>
-            <td>$<%= det.subtotal %></td>
-          </tr>
-        <% }) %>
-      </tbody>
-    </table>
+        <table border="1" cellpadding="5" cellspacing="0">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Cantidad</th>
+              <th>Precio Unit.</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% item.detalles.forEach(det => { %>
+              <tr>
+                <td><%= det.producto.nombre %></td>
+                <td><%= det.cantidad %></td>
+                <td>$<%= det.precio_unitario %></td>
+                <td>$<%= det.subtotal %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+
+    <% }) %>
   </div>
-
-<% }) %>
 
 </body>
 </html>

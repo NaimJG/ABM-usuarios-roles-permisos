@@ -1,0 +1,19 @@
+.historial-container {
+    background-color: #F5E6C8;
+    padding: 20px;
+    border-radius: 8px;
+    gap: 10px;
+    border: 2px solid #A67C52;
+}
+
+.compra {
+    width: fit-content;
+    border: 1px solid #A67C52;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+p {
+    color: #A67C52;
+    font-size: 18px;
+}
