@@ -5,24 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pócimas & Trebejos</title>
   <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/css/panelAdmin.css" />
 </head>
 <body>
   <h1><%= titulo %></h1>
 
-  <nav>
-    <a href="/usuarios">Usuarios</a> |
-    <a href="/roles">Roles</a> |
-    <a href="/permisos">Permisos</a> | 
-    <a href="/productos">Productos</a>
-  </nav>
+  <div class="nav-container">
+    <nav>
+      <a href="/usuarios">Usuarios</a> <span style="color: #A67C52;">|</span>
+      <a href="/roles">Roles</a> <span style="color: #A67C52;">|</span>
+      <a href="/permisos">Permisos</a> <span style="color: #A67C52;">|</span> 
+      <a href="/productos">Productos</a>
+    </nav>
 
-  <p>Seleccioná una sección para administrar.</p>
-  
-<div>
-  <form action="/auth/logout" method="get">
-    <button type="submit">Cerrar sesión</button>
-  </form>
-</div>
+    <p style="color: #A67C52; font-weight: 600;">Seleccioná una sección para administrar.</p>
+      
+    <div>
+      <form action="/auth/logout" method="get">
+        <button type="submit">Cerrar sesión</button>
+      </form>
+    </div>
+  </div>
 
   
 </body>

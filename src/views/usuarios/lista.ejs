@@ -3,39 +3,45 @@
 <head>
   <meta charset="UTF-8" />
   <title>Usuarios</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/css/usuarios.css">
 </head>
 <body>
   <h1>Usuarios</h1>
 
-  <a href="/">← Volver al inicio</a> |
-  <a href="/usuarios/nuevo">Nuevo Usuario</a>
+  <div class="users-container">
+    <div class="nav-container">
+      <a href="/">← Volver al inicio</a> <span style="color: #A67C52;">|</span>
+      <a href="/usuarios/nuevo">Nuevo Usuario</a>
+    </div>
 
-  <table border="1" cellpadding="5">
-    <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>Email</th>
-        <th>Rol</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% usuarios.forEach(usuario => { %>
+    <table border="1" cellpadding="5">
+      <thead>
         <tr>
-          <td><%= usuario.nombre %></td>
-          <td><%= usuario.email %></td>
-          <td><%= usuario.rol ? usuario.rol.nombre : 'Sin rol' %></td>
-          <td>
-            <a href="/usuarios/<%= usuario._id %>">Ver</a>
-            <form action="/usuarios/<%= usuario._id %>/delete" method="POST" style="display:inline;">
-              <button type="submit" onclick="return confirm('¿Eliminar este usuario?')">
-                Eliminar
-              </button>
-            </form>
-          </td>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Rol</th>
+          <th>Acciones</th>
         </tr>
-      <% }) %>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <% usuarios.forEach(usuario => { %>
+          <tr>
+            <td><%= usuario.nombre %></td>
+            <td><%= usuario.email %></td>
+            <td><%= usuario.rol ? usuario.rol.nombre : 'Sin rol' %></td>
+            <td>
+              <button onclick="window.location.href='/usuarios/<%= usuario._id %>'" class="ver-btn">Ver</button>
+              <form action="/usuarios/<%= usuario._id %>/delete" method="POST" style="display:inline;">
+                <button type="submit" onclick="return confirm('¿Eliminar este usuario?')">
+                  Eliminar
+                </button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
 </body>
 </html>

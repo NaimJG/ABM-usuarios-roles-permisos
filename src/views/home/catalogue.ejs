@@ -3,12 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <title>Catálogo de Productos</title>
+  <link rel="stylesheet" href="/styles.css" />
   <style>
-    body {
-      font-family: Arial;
-      background: #f6f6f6;
-      padding: 20px;
-    }
     h1 {
       margin-bottom: 20px;
     }
@@ -18,13 +14,13 @@
       right: 20px;
       cursor: pointer;
       font-size: 24px;
-      background: white;
+      background: #F5E6C8;
       padding: 10px 15px;
       border-radius: 8px;
       box-shadow: 0 0 5px rgba(0,0,0,0.2);
     }
     .contador {
-      background: red;
+      background: #7A4E2D;
       color: white;
       padding: 2px 6px;
       border-radius: 50%;
@@ -33,12 +29,35 @@
       top: -5px;
       right: -5px;
     }
+    .producto-container {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
     .producto {
-      background: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: #F5E6C8;
       padding: 15px;
       margin-bottom: 15px;
       border-radius: 5px;
-      border: 1px solid #ddd;
+      border: 1px solid #A67C52;
+      width: 300px;
+    }
+    .producto img {
+      align-self: center;
+      width: 70px;
+      height: 70px;
+    }
+    .producto h3 {
+      text-align: center;
+    }
+    .producto p {
+      font-size: 18px;
+      margin: 0;
+      margin-bottom: 5px;
     }
     .btn {
       display: inline-block;
@@ -51,14 +70,14 @@
       cursor: pointer;
     }
     .carrito-control {
+      margin-top: auto;
       display: flex;
       align-items: center;
       gap: 8px;
       margin-top: 10px;
     }
-
     .btn-restar, .btn-sumar {
-      background: #198754;
+      background: #7A4E2D;
       color: white;
       padding: 5px 10px;
       border-radius: 6px;
@@ -112,34 +131,35 @@
       <p>No hay productos cargados en el sistema.</p>
   <% } %>
 
-  <% productos.forEach(producto => { %>
-    <div class="producto" data-stock="<%= producto.stock %>">
-        <% if (producto.imagen) { %>
-            <img src="<%= producto.imagen %>" alt="<%= producto.nombre %>" class="img-producto">
-        <% } %>
+  <div class="producto-container">
+    <% productos.forEach(producto => { %>
+      <div class="producto" data-stock="<%= producto.stock %>">
+          <% if (producto.imagen) { %>
+              <img src="<%= producto.imagen %>" alt="<%= producto.nombre %>" class="img-producto">
+          <% } %>
 
-      <h3><%= producto.nombre %></h3>
-      <p><strong>Descripción:</strong> <%= producto.descripcion %></p>
-      <p><strong>Precio:</strong> $<%= producto.precio %></p>
-      <p>
-        <% if (!producto.stock) { %>
-          <span style="color: red; font-weight: bold;">¡Stock agotado!</span>
-        <% } else { %>
-          <strong>Stock:</strong> <%= producto.stock %>
-        <% } %>
-      </p>
-
-      <div class="carrito-control" data-id="<%= producto._id %>">
-        <button class="btn-restar" data-id="<%= producto._id %>" <%= producto.stock === 0 ? "disabled" : "" %>>
-          -
-        </button>
-        <span class="cantidad-item" id="cant_<%= producto._id %>">0</span>
-        <button class="btn-sumar" data-id="<%= producto._id %>" <%= producto.stock === 0 ? "disabled" : "" %>>
-          +
-        </button>
+        <h3><%= producto.nombre %></h3>
+        <p><strong>Descripción:</strong> <%= producto.descripcion %></p>
+        <p><strong>Precio:</strong> $<%= producto.precio %></p>
+        <p>
+          <% if (!producto.stock) { %>
+            <span style="color: red; font-weight: bold;">¡Stock agotado!</span>
+          <% } else { %>
+            <strong>Stock:</strong> <%= producto.stock %>
+          <% } %>
+        </p>
+        <div class="carrito-control" data-id="<%= producto._id %>">
+          <button class="btn-restar" data-id="<%= producto._id %>" <%= producto.stock === 0 ? "disabled" : "" %>>
+            -
+          </button>
+          <span class="cantidad-item" id="cant_<%= producto._id %>">0</span>
+          <button class="btn-sumar" data-id="<%= producto._id %>" <%= producto.stock === 0 ? "disabled" : "" %>>
+            +
+          </button>
+        </div>
       </div>
-    </div>
-  <% }) %>
+    <% }) %>
+  </div>
 
   <script>
     async function cargarContador() {

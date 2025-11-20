@@ -5,22 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login - Pócimas & Trebejos</title>
   <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/css/signup.css">
 </head>
 <body>
-    <h1>Crear Cuenta</h1>
+    <h1>¡Bienvenido a Pócimas & Trebejos!</h1>
+    
+    <div class="form-container">
+      <h2>Crear Cuenta</h2>
 
-    <% if (typeof error !== "undefined" && error) { %>
-    <p style="color:red"><%= error %></p>
-    <% } %>
-
-    <form action="/auth/signup" method="POST">
-    <input type="text" name="nombre" placeholder="Nombre" required>
-    <input type="email" name="email" placeholder="Correo" required>
-    <input type="password" name="password" placeholder="Contraseña" required>
-    <button type="submit">Registrarme</button>
-    </form>
-    <div>
-      <a href="/auth/login">Iniciar Sesión</a>
+      <form action="/auth/signup" method="POST" class="form">
+        <input type="text" name="nombre" placeholder="Nombre" required><br>
+        <input type="email" name="email" placeholder="Correo" required><br>
+        <input type="password" name="password" placeholder="Contraseña" required><br>
+        <button type="submit">Registrarme</button>
+      </form>
+      <div>
+        <a href="/auth/login">Iniciar Sesión</a>
+      </div>
+      <% if (typeof error !== "undefined" && error) { %>
+        <p style="color:red; font-weight: 600;"><%= error %></p>
+      <% } %>
     </div>
 </body>
 </html>
